@@ -1,0 +1,11 @@
+<function name="main">
+    <math type="+" id="result">
+        <let>2</let>
+        <let>6</let>
+    </math>
+    <call name="printResult" />
+</function>
+
+<function name="printResult">
+    <print>#result</print>
+</function>

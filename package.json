@@ -1,0 +1,20 @@
+{
+  "name": "xmlscript",
+  "version": "0.1.0",
+  "description": "interpreter for best xml programming language",
+  "main": "main.js",
+  "scripts": {
+    "test": "node main.js demo.xml"
+  },
+  "keywords": [
+    "xml",
+    "math",
+    "xml"
+  ],
+  "author": "pizza61",
+  "license": "MIT",
+  "repository": "https://github.com/pizza61/xmlscript",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2"
+  }
+}
