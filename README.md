@@ -33,27 +33,85 @@ Output:
 ## Documentation
 
 ### Variables
+**Tag**: `<let>`
+
+**Attributes**:
+* id - variable name
+
+**Example**:
 ```xml
 <let id="name">value</let>
 ```
 
 ### Math
+**Tag**: `<math>`
 
+**Attributes**:
+* id - name of variable with result
+
+**Example**:
 ```xml
-<math type="+" id="nameOfVariableWithResult">
-    <let>2</let>
-    <let>2</let>
-</math>
+<math id="result">Math.sqrt(16)</math>
 ```
 
-types:
-* `+` addition
-* `-` subtraction
-* `*` multiplication
-* `/` division
+### js
+**Tag**: `<js>`
 
+Eval js code
+
+**Example**:
+```xml
+<js>console.log("hello world")</js>
+```
+
+### if
+**Tag**: `<if>`
+
+**Attributes**:
+* c - condition
+
+**Example**:
+```xml
+<if c="2 > 1">
+    <print>2 > 1!!!</print>
+    <else>
+        <print>what</print>
+    </else>
+</if>
+```
+
+### sleep
+**Tag**: `<sleep>`
+
+**Attributes**:
+* ms - time in ms
+
+**Example**:
+```xml
+<sleep ms="2500">
+    <print>Oh, hi!</print>
+</sleep>
+```
+
+### for
+**Tag**: `<for>`
+
+**Attributes**:
+* c - count
+* id - name of variable with counter
+
+**Example**:
+```xml
+<for id="count" c="3">
+    <print>#count</print>
+</for>
+```
 ### Print
+**Tag**: `<print>`
 
+**Attributes**: none
+
+**Example**:
 ```xml
 <print>You can print #variables</print>
 ```
@@ -61,18 +119,16 @@ types:
 ### Functions, call
 ```xml
 <function name="main">
-    <call name="notmain">
+    <notmain></notmain>
 </function>
 
 <function name="notmain">
-    <call name="main">
+    <main></main>
 </function>
 ```
 
 ## TODO
 everything, but the most important:
-* if
-* loops (for, while)
 * arrays
 * classes
 * a way to make a request and parse json

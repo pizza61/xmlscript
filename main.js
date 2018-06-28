@@ -31,7 +31,11 @@ function parseStringForVariables(string) {
     str.forEach((lol) => { // for each word
         if (lol.substring(0, 1) == "#") { // if variable found
             let last = lol.substring(1);
-            let c = findVariable(last);
+            let c;
+            arrZmiennych.forEach((vari) => {
+                let potym = last.substr(vari.name.length, last.length);
+                if(last.includes(vari.name)) c = vari.value+potym; 
+            })
             if (typeof c != 'undefined') {
                 str[str.indexOf(lol)] = c;
             }
@@ -50,11 +54,19 @@ function findVariable(name) { // find variable in arrZmiennych (array of variabl
     return value; 
 }
 
+function leta($, ela, val) {
+    let lk = arrZmiennych.find(o => o.name == $(ela).attr('id'));
+    if(typeof lk != 'undefined') {
+        arrZmiennych[arrZmiennych.indexOf(lk)].value = val;
+    } else {
+        let zmienna = new Variable($(ela).attr('id'), val)
+        arrZmiennych.push(zmienna); // register the variable
+    }
+}
 function itr($, ela) { 
     switch (ela.tagName.toLowerCase()) {
-        case "let": 
-            let zmienna = new Variable($(ela).attr('id'), $(ela).text())
-            arrZmiennych.push(zmienna); // register the variable
+        case "let":
+            leta($, ela, $(ela).text());
             break;
         case "print": // printing
             let a = parseStringForVariables($(ela).text());
@@ -64,6 +76,8 @@ function itr($, ela) {
             //console.log($(ela).text());
             break;
         case "math":
+
+            if($(ela).attr("type")) {
             let arr = [];
             let type = $(ela).attr("type");
             $(ela).children().each((i1, e1) => { // push each let to array
@@ -102,20 +116,97 @@ function itr($, ela) {
             }
 
             if ($(ela).attr("id").length > 0) { // save to result xml variable
-                let zmienna = new Variable($(ela).attr('id'), wynik);
-                arrZmiennych.push(zmienna);
+                /*let zmienna = new Variable($(ela).attr('id'), wynik);
+                arrZmiennych.push(zmienna);*/
+                leta($, ela, wynik);
+            }
+            } else {
+                let evalowany = parseStringForVariables($(ela).text());
+                wynik = eval(evalowany);
+                /*let zmienna = new Variable($(ela).attr('id'), wynik);
+                arrZmiennych.push(zmienna);*/
+                leta($, ela, wynik);
             }
             break;
-        case "call":
+        case "call": // call a function
             let functionName = $(ela).attr("name");
-            $('function').each((index, el) => {
-                if ($(el).attr('name') == functionName) {
-                    $(el).children().each((indexa, ela) => {
-                        itr($, ela)
-                    })
+            call($, functionName);
+            break;
+        case "js": // eval js code
+            let elat = parseStringForVariables($(ela).text());
+            eval(elat);
+            break;
+        case "if": // if statement
+            let conditionString = parseStringForVariables($(ela).attr("c"));
+            let con = conditionString.split(' ');
+            if(con.length == 3) { // if condition looks like "#var == 6"
+                let a = con[0]; // left side
+                let b = con[2]; // right side
+                let ab = con[1];
+                if(ab == "==") {
+                    if(a == b) {
+                        ifTrue($, ela);
+                    } else {
+                        ifFalse($, ela);
+                    }
+                } else if (ab == "!=") {
+                    if(a != b) {
+                        ifTrue($, ela);
+                    } else {
+                       ifFalse($, ela);
+                    }
+                } else if (ab == ">") {
+                    if(Number(a) > Number(b)) ifTrue($, ela);
+                    else ifFalse($, ela);
+                } else if (ab == "<") {
+                    if(Number(a) < Number(b)) {
+                        ifTrue($, ela)
+                    }
+                    else ifFalse($, ela);
                 }
-            })
+            }
+            break;
+        case "sleep": 
+            let czas = $(ela).attr("ms"); // time in ms
+            setTimeout(() => {
+                $(ela).children().each((i, e) => itr($, e))
+            }, Number(czas))
+            break;
+        case "for": // for loop
+            let count = Number($(ela).attr("c"));
+            leta($, ela, 0);
+            for(let i = 0; i < count; i++) {
+                leta($, ela, i);
+                $(ela).children().each((i4, e4) => {
+                    itr($, e4);
+                })
+            }
+            break;
+        default: // other way to call a function
+            let fName = ela.tagName;
+            call($, fName);
+            break;
     }
 }
 
-// i know i could do it better but i will do it later
+ifTrue = ($, ela) => {
+    $(ela).children().each((i2, e2) => {
+        itr($, e2);
+    })
+}
+ifFalse = ($, ela) => {
+    $(ela).find("else").children().each((i3, e3) => {
+        itr($, e3);
+    })
+}
+
+function call($, fName) {
+    $('function').each((index, el) => {
+        if ($(el).attr('name').toLowerCase() == fName) {
+            $(el).children().each((indexa, ela) => {
+                itr($, ela);
+                return;
+            })
+        }
+    })
+}

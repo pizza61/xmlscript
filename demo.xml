@@ -1,11 +1,16 @@
 <function name="main">
-    <math type="+" id="result">
-        <let>2</let>
-        <let>6</let>
-    </math>
-    <call name="printResult" />
+    <math id="result">Math.sqrt(16)</math>
+    <if c="#result < 16">
+        <print>True</print>
+        <else>
+            <print>False, it's #result</print>
+        </else>
+    </if>
+    <sleeping></sleeping>
 </function>
 
-<function name="printResult">
-    <print>#result</print>
+<function name="sleeping">
+    <sleep ms="2500">
+        <print>Oh, hi!</print>
+    </sleep>
 </function>

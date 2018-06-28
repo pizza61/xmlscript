@@ -1,6 +1,6 @@
 {
   "name": "xmlscript",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "interpreter for best xml programming language",
   "main": "main.js",
   "scripts": {
