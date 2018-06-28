@@ -11,24 +11,7 @@ xml-based programming language and only interpreter for it.
 * ...
 * profit
 
-## Example code
-```xml
-<function name="main">
-    <math type="+" id="result">
-        <let>2</let>
-        <let>6</let>
-    </math>
-    <call name="printResult" />
-</function>
-
-<function name="printResult">
-    <print>#result</print>
-</function>
-```
-Output:
-```
-8
-```
+## [Example code](https://github.com/pizza61/xmlscript/blob/master/demo.xml)
 
 ## Documentation
 
